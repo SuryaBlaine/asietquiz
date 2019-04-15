@@ -1,0 +1,165 @@
+{% load static %}<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Quiz{% endblock %}</title>
+    <link rel="icon" href="{% static 'img/favicon.png' %}">
+    <link href="https://fonts.googleapis.com/css?family=Clicker+Script" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/fontello-2f186091/css/fontello.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+    {% if user.is_authenticated and user.is_teacher %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/teachers.css' %}">
+    {% else %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/students.css' %}">
+    {% endif %}
+    <style type="text/css">
+      body{
+        overflow-x: hidden;
+      }
+      #thre{
+        position: absolute;
+        z-index: -999999999;
+        margin: -17px;
+
+      }
+    </style>
+  </head>
+  <body class="p-3 bg-light">
+    <div id="thre">
+      
+    </div>
+    <div class="auth p-1">
+      {% if user.is_authenticated %}
+            <p class="pt-3">Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}">Log out</a>.</p>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-light" role="button">Log in</a>
+            <a href="{% url 'student_signup' %}" class="btn btn-primary" role="button">Sign up</a>
+      {% endif %}
+    </div>
+    <div class="">
+        <div class="card-body">
+          {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      })
+
+
+  var camera, scene, renderer, stats;
+
+      var sphere;
+
+      var mouseX = 0, mouseY = 0;
+
+      var windowHalfX = window.innerWidth / 2;
+      var windowHalfY = window.innerHeight / 2;
+      
+      document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+      init();
+      animate();
+
+
+      function init() {
+
+        camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1000, 15000 );
+        camera.position.z = 3200;
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0x000222 );
+
+        sphere = new THREE.Mesh( new THREE.SphereBufferGeometry( 0, 20, 20 ), new THREE.MeshStandardMaterial() );
+        scene.add( sphere );
+
+        var geometry = new THREE.CylinderBufferGeometry( 5.5, 0, 105, 10 );
+        geometry.rotateX( Math.PI / 3 );
+
+        var material = new THREE.MeshNormalMaterial();
+
+        for ( var i = 0; i < 150; i ++ ) {
+
+          var mesh = new THREE.Mesh( geometry, material );
+          mesh.position.x = Math.random() * 5000 - 2000;
+          mesh.position.y = Math.random() * 5000 - 3000;
+          mesh.position.z = Math.random() * 5000 - 3000;
+          mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 4 + 2;
+          scene.add( mesh );
+
+        }
+
+        scene.matrixAutoUpdate = false;
+
+        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.getElementById('thre').appendChild( renderer.domElement );
+
+        
+        
+
+        //
+
+        window.addEventListener( 'resize', onWindowResize, false );
+      }
+
+      function onWindowResize() {
+
+        windowHalfX = window.innerWidth / 2;
+        windowHalfY = window.innerHeight / 2;
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+      }
+
+      function onDocumentMouseMove( event ) {
+
+        mouseX = ( event.clientX - windowHalfX ) * 1.5;
+        mouseY = ( event.clientY - windowHalfY ) * 1.5;
+
+      }
+
+      
+
+      function animate() {
+
+        requestAnimationFrame( animate );
+
+        render();
+      
+
+      }
+
+      function render() {
+
+        camera.position.x += ( mouseX - camera.position.x ) * 1.07;
+        camera.position.y += ( - mouseY - camera.position.y ) * 1.07;
+        camera.lookAt( scene.position );
+
+        renderer.render( scene, camera );
+
+      }
+
+
+
+    </script>
+  </body>
+</html>

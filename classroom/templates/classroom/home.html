@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<head>
+	<style type="text/css">
+	body{
+		color: white;
+	}
+		
+	</style>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.js"></script>
+	
+	
+</head>
+
+<div class="data">
+  <h1 class="display-3">Quiz </h1>
+  <p class="lead">
+    If you already have an account, go ahead and <a href="{% url 'login' %}">log in</a>. <br>If you are new, get started
+    by <a href="{% url 'student_signup' %}">creating an account</a>.
+  </p>
+  <hr>
+</div>
+
+{% endblock %}
